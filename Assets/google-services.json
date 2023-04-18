@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "636207698259",
+    "project_id": "fbrcmobiletest",
+    "storage_bucket": "fbrcmobiletest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:636207698259:android:0b5a25a015a2f84f7b51a6",
+        "android_client_info": {
+          "package_name": "com.Avatov.FbRC_MobileTestApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "636207698259-i1ltic5hh388vp1avuucjg6rq1u9ks9e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClC4_V8HIpog0AdtXEtt9RWjhfbfz-NdE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "636207698259-i1ltic5hh388vp1avuucjg6rq1u9ks9e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

